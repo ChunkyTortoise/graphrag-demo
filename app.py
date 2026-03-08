@@ -9,12 +9,14 @@ from __future__ import annotations
 
 import io
 import os
+import tempfile
 
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import networkx as nx
 import streamlit as st
+import streamlit.components.v1 as components
 
 from graph.extractor import EntityExtractor, EntityType
 from graph.knowledge_graph import KnowledgeGraph
@@ -244,13 +246,7 @@ with tab_graph:
     if kg.entity_count == 0:
         st.info("No entities extracted. Try uploading a document with named entities.")
     else:
-        # Render with matplotlib
-        fig, ax = plt.subplots(figsize=(12, 8))
-        fig.patch.set_facecolor("#0f172a")
-        ax.set_facecolor("#0f172a")
-
         G = kg.graph
-        pos = nx.spring_layout(G, k=2.0, iterations=50, seed=42)
 
         type_colors = {
             "PERSON": "#4fc3f7",
@@ -260,31 +256,88 @@ with tab_graph:
             "LOCATION": "#ef9a9a",
         }
 
-        node_colors = [
-            type_colors.get(G.nodes[n].get("entity_type", "CONCEPT"), "#e0e0e0")
-            for n in G.nodes
-        ]
-        node_sizes = [
-            300 + 100 * G.nodes[n].get("mentions", 1) for n in G.nodes
-        ]
-        labels = {n: G.nodes[n].get("name", n)[:20] for n in G.nodes}
-
-        nx.draw_networkx_edges(G, pos, ax=ax, edge_color="#555555", alpha=0.5, arrows=True)
-        nx.draw_networkx_nodes(
-            G, pos, ax=ax, node_color=node_colors, node_size=node_sizes, alpha=0.9
+        # Optional: highlight query entities
+        query_highlight = st.text_input(
+            "Highlight entities matching query (optional)", key="graph_query"
         )
-        nx.draw_networkx_labels(G, pos, labels, ax=ax, font_size=8, font_color="white")
+        query_node_ids: set[str] = set()
+        if query_highlight:
+            query_node_ids = set(kg.find_entities_in_query(query_highlight))
 
-        ax.set_title("Knowledge Graph", color="white", fontsize=14)
-        ax.axis("off")
+        # Try interactive pyvis, fall back to matplotlib
+        try:
+            from pyvis.network import Network
 
-        # Legend
-        for etype, color in type_colors.items():
-            ax.scatter([], [], c=color, s=100, label=etype)
-        ax.legend(loc="upper left", fontsize=8, facecolor="#1e293b", edgecolor="#334155", labelcolor="white")
+            net = Network(
+                height="520px", width="100%", bgcolor="#0e1117", font_color="white"
+            )
+            net.from_nx(G)
 
-        st.pyplot(fig)
-        plt.close(fig)
+            for node in net.nodes:
+                node_id = node["id"]
+                degree = G.degree(node_id) if G.has_node(node_id) else 1
+                node["size"] = max(10, degree * 5)
+                etype = G.nodes[node_id].get("entity_type", "CONCEPT") if G.has_node(node_id) else "CONCEPT"
+                if query_node_ids and node_id in query_node_ids:
+                    node["color"] = "#FF6B6B"
+                else:
+                    node["color"] = type_colors.get(etype, "#e0e0e0")
+                name = G.nodes[node_id].get("name", node_id) if G.has_node(node_id) else node_id
+                node["title"] = f"{name}\nType: {etype}\nDegree: {degree}"
+                node["label"] = name[:20]
+
+            for edge in net.edges:
+                edge["color"] = "#888888"
+                edge["width"] = max(1, edge.get("weight", 1))
+
+            net.set_options("""{
+                "physics": {
+                    "forceAtlas2Based": {"gravitationalConstant": -50, "springLength": 100},
+                    "solver": "forceAtlas2Based"
+                }
+            }""")
+
+            html = net.generate_html()
+            components.html(html, height=540, scrolling=False)
+        except Exception:
+            # Fallback: matplotlib static graph
+            fig, ax = plt.subplots(figsize=(12, 8))
+            fig.patch.set_facecolor("#0f172a")
+            ax.set_facecolor("#0f172a")
+
+            pos = nx.spring_layout(G, k=2.0, iterations=50, seed=42)
+
+            node_colors_list = []
+            for n in G.nodes:
+                if query_node_ids and n in query_node_ids:
+                    node_colors_list.append("#FF6B6B")
+                else:
+                    node_colors_list.append(
+                        type_colors.get(G.nodes[n].get("entity_type", "CONCEPT"), "#e0e0e0")
+                    )
+            node_sizes = [300 + 100 * G.nodes[n].get("mentions", 1) for n in G.nodes]
+            labels = {n: G.nodes[n].get("name", n)[:20] for n in G.nodes}
+
+            nx.draw_networkx_edges(G, pos, ax=ax, edge_color="#555555", alpha=0.5, arrows=True)
+            nx.draw_networkx_nodes(G, pos, ax=ax, node_color=node_colors_list, node_size=node_sizes, alpha=0.9)
+            nx.draw_networkx_labels(G, pos, labels, ax=ax, font_size=8, font_color="white")
+
+            ax.set_title("Knowledge Graph", color="white", fontsize=14)
+            ax.axis("off")
+
+            for etype, color in type_colors.items():
+                ax.scatter([], [], c=color, s=100, label=etype)
+            ax.legend(loc="upper left", fontsize=8, facecolor="#1e293b", edgecolor="#334155", labelcolor="white")
+
+            st.pyplot(fig)
+            plt.close(fig)
+
+        # Legend (for pyvis)
+        legend_html = " ".join(
+            f'<span style="color:{c}; margin-right:12px;">&#9679; {t}</span>'
+            for t, c in type_colors.items()
+        )
+        st.markdown(legend_html, unsafe_allow_html=True)
 
         # Entity table
         st.markdown("### Entities")
@@ -303,16 +356,16 @@ with tab_graph:
 
 # -- Tab 3: Comparison --
 with tab_compare:
-    st.markdown("### Basic RAG vs GraphRAG")
+    st.markdown("### BM25 vs Hybrid vs GraphRAG")
     st.markdown("Enter a query to compare retrieval quality side-by-side.")
 
     compare_query = st.text_input("Comparison query", key="compare_q")
 
     if compare_query and st.button("Compare", key="compare_btn"):
-        col_basic, col_graph = st.columns(2)
+        col_basic, col_hybrid, col_graph = st.columns(3)
 
         with col_basic:
-            st.markdown("#### Basic RAG (BM25)")
+            st.markdown("#### BM25")
             basic: BasicRAGPipeline = st.session_state.basic_pipeline
             basic_result = basic.query(compare_query)
             st.markdown(basic_result.answer[:500])
@@ -325,10 +378,23 @@ with tab_compare:
                         st.markdown(f"**[Source {i+1}]** (score: {src.score:.3f})")
                         st.markdown(f"> {src.content}...")
 
+        with col_hybrid:
+            st.markdown("#### Hybrid (BM25+Vector)")
+            graph_pipeline_h: GraphRAGPipeline = st.session_state.graph_pipeline
+            hybrid_results = graph_pipeline_h.retrieve_hybrid(compare_query, top_k=5)
+            if hybrid_results:
+                for r in hybrid_results:
+                    st.markdown(f"**RRF: {r['rrf_score']:.4f}**")
+                    st.caption(r["document"][:200])
+                    st.divider()
+                st.metric("Results", len(hybrid_results))
+            else:
+                st.info("No hybrid results found.")
+
         with col_graph:
-            st.markdown("#### GraphRAG (BM25 + Graph)")
-            graph_pipeline: GraphRAGPipeline = st.session_state.graph_pipeline
-            graph_result = graph_pipeline.query(compare_query)
+            st.markdown("#### GraphRAG")
+            graph_pipeline_g: GraphRAGPipeline = st.session_state.graph_pipeline
+            graph_result = graph_pipeline_g.query(compare_query)
             st.markdown(graph_result.answer[:500])
 
             c1, c2, c3 = st.columns(3)

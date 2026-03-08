@@ -7,6 +7,7 @@ from graph.knowledge_graph import KnowledgeGraph
 from graph.retriever import GraphRetriever, RetrievedChunk
 from rag.basic import BasicRAGPipeline, chunk_text
 from rag.graph_rag import GraphRAGPipeline
+from rag.vector_store import VectorStore, _cosine_similarity
 
 
 SAMPLE_TEXT = (
@@ -147,3 +148,93 @@ class TestChunkText:
         text = f"{words}. {words}."
         chunks = chunk_text(text, chunk_size=20, chunk_overlap=5)
         assert len(chunks) >= 2
+
+
+class TestVectorStore:
+    def test_add_and_search(self) -> None:
+        vs = VectorStore()
+        vs.add_documents(["cats are great", "dogs are loyal", "fish swim fast"])
+        results = vs.search("feline pets", top_k=2)
+        assert len(results) == 2
+        assert results[0]["rank"] == 1
+        assert results[1]["rank"] == 2
+
+    def test_search_empty_store(self) -> None:
+        vs = VectorStore()
+        results = vs.search("anything")
+        assert results == []
+
+    def test_count(self) -> None:
+        vs = VectorStore()
+        assert vs.count == 0
+        vs.add_documents(["doc1", "doc2"])
+        assert vs.count == 2
+
+    def test_clear(self) -> None:
+        vs = VectorStore()
+        vs.add_documents(["doc1"])
+        vs.clear()
+        assert vs.count == 0
+        assert vs.search("doc1") == []
+
+    def test_metadata_preserved(self) -> None:
+        vs = VectorStore()
+        vs.add_documents(["hello world"], [{"source": "test"}])
+        results = vs.search("hello", top_k=1)
+        assert results[0]["metadata"] == {"source": "test"}
+
+    def test_cosine_similarity_identical(self) -> None:
+        import numpy as np
+        a = np.array([1.0, 0.0, 0.0])
+        assert abs(_cosine_similarity(a, a) - 1.0) < 1e-6
+
+    def test_cosine_similarity_orthogonal(self) -> None:
+        import numpy as np
+        a = np.array([1.0, 0.0])
+        b = np.array([0.0, 1.0])
+        assert abs(_cosine_similarity(a, b)) < 1e-6
+
+    def test_cosine_similarity_zero_vector(self) -> None:
+        import numpy as np
+        a = np.array([1.0, 2.0])
+        b = np.zeros(2)
+        assert _cosine_similarity(a, b) == 0.0
+
+
+class TestHybridRetrieval:
+    def test_retrieve_hybrid_returns_results(self, graph_pipeline: GraphRAGPipeline) -> None:
+        results = graph_pipeline.retrieve_hybrid("Acme Corp CEO", top_k=3)
+        assert isinstance(results, list)
+        assert len(results) <= 3
+
+    def test_retrieve_hybrid_has_rrf_score(self, graph_pipeline: GraphRAGPipeline) -> None:
+        results = graph_pipeline.retrieve_hybrid("enterprise software")
+        for r in results:
+            assert "rrf_score" in r
+            assert "document" in r
+            assert "bm25_rank" in r
+            assert "vector_rank" in r
+            assert r["rrf_score"] > 0
+
+    def test_retrieve_hybrid_sorted_by_rrf(self, graph_pipeline: GraphRAGPipeline) -> None:
+        results = graph_pipeline.retrieve_hybrid("Acme Corp")
+        scores = [r["rrf_score"] for r in results]
+        assert scores == sorted(scores, reverse=True)
+
+    def test_retrieve_hybrid_empty_query(self, graph_pipeline: GraphRAGPipeline) -> None:
+        results = graph_pipeline.retrieve_hybrid("")
+        assert isinstance(results, list)
+
+    def test_vector_store_populated_after_ingest(self, graph_pipeline: GraphRAGPipeline) -> None:
+        assert graph_pipeline.vector_store.count > 0
+
+    def test_rrf_score_static(self) -> None:
+        score = GraphRAGPipeline._rrf_score(1, 1, k=60)
+        expected = 2.0 / 61
+        assert abs(score - expected) < 1e-9
+
+    def test_rrf_score_asymmetric(self) -> None:
+        score = GraphRAGPipeline._rrf_score(1, 100, k=60)
+        assert score > 0
+        # First rank contributes more
+        assert 1.0 / 61 < score < 1.0 / 61 + 1.0 / 160 + 0.001

@@ -11,6 +11,7 @@ from graph.extractor import EntityExtractor
 from graph.knowledge_graph import KnowledgeGraph
 from graph.retriever import GraphRetriever, RetrievedChunk
 from rag.basic import chunk_text
+from rag.vector_store import VectorStore
 
 
 @dataclass
@@ -49,6 +50,7 @@ class GraphRAGPipeline:
         self._kg = KnowledgeGraph(extractor=self._extractor)
         self._retriever = GraphRetriever(self._kg)
         self._documents: dict[str, str] = {}
+        self.vector_store = VectorStore()
 
     @property
     def knowledge_graph(self) -> KnowledgeGraph:
@@ -59,11 +61,14 @@ class GraphRAGPipeline:
         return self._retriever
 
     def ingest(self, doc_id: str, text: str) -> int:
-        """Ingest a document: chunk, extract entities, build graph + BM25 index."""
+        """Ingest a document: chunk, extract entities, build graph + BM25 + vector index."""
         chunks = chunk_text(text, self._chunk_size, self._chunk_overlap)
         self._documents[doc_id] = text
         self._kg.add_document(doc_id, text, chunks)
         self._retriever.build_index()
+        self.vector_store.add_documents(
+            chunks, [{"doc_id": doc_id, "chunk_idx": i} for i in range(len(chunks))]
+        )
         return len(chunks)
 
     def query(self, question: str, top_k: int = 5) -> GraphRAGResult:
@@ -165,6 +170,43 @@ class GraphRAGPipeline:
             supporting_sources=sorted(supporting_source_ids),
             unsupported_claims=unsupported_claims,
         )
+
+    @staticmethod
+    def _rrf_score(bm25_rank: int, vector_rank: int, k: int = 60) -> float:
+        """Reciprocal Rank Fusion score."""
+        return 1.0 / (k + bm25_rank) + 1.0 / (k + vector_rank)
+
+    def retrieve_hybrid(self, query: str, top_k: int = 5) -> list[dict]:
+        """Hybrid retrieval: BM25 + vector similarity via RRF."""
+        # BM25 results from the graph retriever (already ranked)
+        bm25_results = self._retriever.retrieve(query, k=top_k * 2)
+        bm25_ranks: dict[str, int] = {
+            r.text: i + 1 for i, r in enumerate(bm25_results)
+        }
+
+        # Vector results
+        vector_results = self.vector_store.search(query, top_k=top_k * 2)
+        vector_ranks: dict[str, int] = {
+            r["document"]: r["rank"] for r in vector_results
+        }
+
+        # Combine via RRF
+        all_docs = set(list(bm25_ranks.keys()) + list(vector_ranks.keys()))
+        fallback_rank = top_k * 2 + 1
+        scored: list[dict] = []
+        for doc in all_docs:
+            bm25_r = bm25_ranks.get(doc, fallback_rank)
+            vec_r = vector_ranks.get(doc, fallback_rank)
+            rrf = self._rrf_score(bm25_r, vec_r)
+            scored.append({
+                "document": doc,
+                "rrf_score": rrf,
+                "bm25_rank": bm25_r,
+                "vector_rank": vec_r,
+            })
+
+        scored.sort(key=lambda x: x["rrf_score"], reverse=True)
+        return scored[:top_k]
 
     def _build_graph_path(self, entity_ids: list[str]) -> list[str]:
         """Build a traversal path description for display."""

@@ -10,9 +10,11 @@ dependencies = [
     "rank-bm25>=0.2.2",
     "numpy>=1.26",
     "matplotlib>=3.9",
+    "pyvis>=0.3.2",
 ]
 
 [project.optional-dependencies]
+vectors = ["sentence-transformers>=3.0.0"]
 nlp = ["spacy>=3.7"]
 dev = ["pytest>=8.3", "pytest-cov>=6.0"]
 

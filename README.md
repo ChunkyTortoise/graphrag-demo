@@ -1,3 +1,9 @@
+![Tests](https://img.shields.io/badge/tests-48%20passing-brightgreen)
+![Python](https://img.shields.io/badge/python-3.12%2B-blue)
+![Streamlit](https://img.shields.io/badge/Streamlit-1.41-red)
+![Claude](https://img.shields.io/badge/Claude-Sonnet-blueviolet)
+![CI](https://github.com/ChunkyTortoise/graphrag-demo/actions/workflows/ci.yml/badge.svg)
+
 # GraphRAG Demo: Entity-Aware Multi-Hop Retrieval
 
 A production-grade RAG pipeline enhanced with knowledge graph extraction for multi-hop reasoning, entity-aware retrieval, and confidence scoring.
