@@ -111,10 +111,9 @@ graphrag-demo/
 
 ## Screenshots
 
-<!-- Screenshots pending browser automation capture — images not yet in docs/screenshots/ -->
-| Knowledge Graph Visualization | Basic vs GraphRAG Comparison |
-|------------------------------|------------------------------|
-| ![Pyvis graph](docs/screenshots/graph-visualization.png) | ![Comparison](docs/screenshots/comparison.png) |
+| Knowledge Graph Visualization | Query Results |
+|------------------------------|---------------|
+| ![Knowledge Graph](docs/screenshots/knowledge_graph.png) | ![Query Results](docs/screenshots/query_results.png) |
 
 ## Certifications Applied
 
