@@ -1,12 +1,30 @@
-![Tests](https://img.shields.io/badge/tests-48%20passing-brightgreen)
+[![Tests](https://github.com/ChunkyTortoise/graphrag-demo/actions/workflows/ci.yml/badge.svg)](https://github.com/ChunkyTortoise/graphrag-demo/actions)
+[![Coverage](https://img.shields.io/badge/coverage-%E2%89%A570%25-brightgreen)](https://github.com/ChunkyTortoise/graphrag-demo/actions)
+[![Tests](https://img.shields.io/badge/tests-63%20passing-brightgreen)](https://github.com/ChunkyTortoise/graphrag-demo/actions)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 ![Python](https://img.shields.io/badge/python-3.12%2B-blue)
 ![Streamlit](https://img.shields.io/badge/Streamlit-1.41-red)
 ![Claude](https://img.shields.io/badge/Claude-Sonnet-blueviolet)
-![CI](https://github.com/ChunkyTortoise/graphrag-demo/actions/workflows/ci.yml/badge.svg)
 
 # GraphRAG Demo: Entity-Aware Multi-Hop Retrieval
 
 A production-grade RAG pipeline enhanced with knowledge graph extraction for multi-hop reasoning, entity-aware retrieval, and confidence scoring.
+
+## Try It Now
+
+The app is live — no API key required for BM25 keyword retrieval mode.
+
+**[Launch GraphRAG Demo on Streamlit Cloud →](https://graphr-azucpb9e7jkdxavkahvicr.streamlit.app)**
+
+> To enable Claude-powered entity extraction: add your `ANTHROPIC_API_KEY` in the app sidebar.
+> BM25 retrieval works without any API key using fast keyword-based graph construction.
+
+### What to Try
+
+1. Upload any `.txt` or `.pdf` document (try a Wikipedia article or a news story)
+2. Ask a multi-hop question: *"How are [Entity A] and [Entity B] related?"*
+3. Toggle between BM25-only and Claude extraction in the sidebar
+4. Inspect the knowledge graph visualization — nodes are entities, edges are relationships
 
 ## What Makes It Different From Basic RAG
 
@@ -18,32 +36,25 @@ A production-grade RAG pipeline enhanced with knowledge graph extraction for mul
 
 ## Architecture
 
-```
-Document Upload (PDF / TXT / MD)
-        |
-        v
-  Text Chunking (800 tokens, 100 overlap, sentence boundaries)
-        |
-        +---> Entity Extraction (spaCy NER / regex / Claude Haiku)
-        |           |
-        |           v
-        |     Knowledge Graph (NetworkX DiGraph)
-        |       - Nodes: entities with type + mention count
-        |       - Edges: co-occurrence relationships
-        |           |
-        v           v
-   BM25 Index   Graph Traversal (configurable hops)
-        |           |
-        +-----+-----+
-              |
-              v
-    Weighted Score Fusion (BM25 + graph overlap)
-              |
-              v
-    Answer + Confidence % + Sources + Graph Path
-              |
-              v
-    Fact Check (claim vs source coverage)
+```mermaid
+graph LR
+    A[Document Upload] --> B[Text Chunking]
+    B --> C{Entity Extraction}
+    C --> C1[spaCy NER]
+    C --> C2[Regex Patterns]
+    C --> C3[Claude LLM]
+    C1 & C2 & C3 --> D[Knowledge Graph<br/>NetworkX]
+    B --> E[BM25 Index]
+    D --> F[Graph Traversal<br/>Multi-hop]
+    E --> G[Keyword Retrieval]
+    F & G --> H[Score Fusion<br/>RRF]
+    H --> I[Answer + Sources]
+    I --> J[Fact Check<br/>Claude]
+
+    style A fill:#4A90D9,color:#fff
+    style D fill:#7B68EE,color:#fff
+    style H fill:#50C878,color:#fff
+    style J fill:#FF8C42,color:#fff
 ```
 
 ## Run Locally
@@ -98,7 +109,30 @@ graphrag-demo/
 └── requirements.txt
 ```
 
+## Screenshots
+
+<!-- Screenshots pending browser automation capture — images not yet in docs/screenshots/ -->
+| Knowledge Graph Visualization | Basic vs GraphRAG Comparison |
+|------------------------------|------------------------------|
+| ![Pyvis graph](docs/screenshots/graph-visualization.png) | ![Comparison](docs/screenshots/comparison.png) |
+
+## Certifications Applied
+
+Domain pillars from [19 completed AI/ML certifications](https://caymanroden.com) backing this project:
+
+| Domain | Certification | Applied In |
+|--------|--------------|-----------|
+| Knowledge Graphs & NLP | DeepLearning.AI NLP Specialization | Entity extraction pipeline, relationship mapping, graph traversal |
+| Retrieval Systems | IBM AI Engineering Professional Certificate | BM25 index, score fusion (RRF), multi-hop retrieval |
+| LLM Integration | Anthropic Building with Claude (Vanderbilt) | Claude entity extraction, fact-checking layer |
+| Data Engineering | IBM Data Engineering | Document chunking, graph persistence, corpus indexing |
+| Visualization | Meta Back-End Developer | Streamlit graph visualization, interactive UI |
+
 ## Built By
 
 **Cayman Roden** — AI/ML Engineer
 [LinkedIn](https://www.linkedin.com/in/caymanroden/) | [GitHub](https://github.com/ChunkyTortoise) | [Fiverr](https://www.fiverr.com/caymanroden)
+
+## License
+
+[MIT](LICENSE)

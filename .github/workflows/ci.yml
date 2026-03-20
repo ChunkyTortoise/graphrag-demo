@@ -14,6 +14,6 @@ jobs:
       - run: pip install -r requirements.txt
       - run: pip install ruff pytest
       - name: Lint
-        run: ruff check . --ignore E501 || true
+        run: ruff check . --ignore E501
       - name: Test
-        run: pytest tests/ -q --tb=short
+        run: pytest tests/ -v --cov=graph --cov-report=term-missing --cov-fail-under=70
