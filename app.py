@@ -22,6 +22,7 @@ from graph.extractor import EntityExtractor, EntityType
 from graph.knowledge_graph import KnowledgeGraph
 from rag.basic import BasicRAGPipeline
 from rag.graph_rag import GraphRAGPipeline
+from theme import apply_theme
 
 
 # -- Page config --
@@ -31,26 +32,7 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded",
 )
-
-# -- Dark theme CSS --
-st.markdown(
-    """
-<style>
-    .stApp { background-color: #0f172a; color: #f8fafc; }
-    .main .block-container { background-color: #0f172a; padding-top: 2rem; }
-    .stButton > button {
-        background-color: #6366f1; color: white; border: none;
-        border-radius: 6px; padding: 0.5rem 1.5rem; font-weight: 600;
-    }
-    .stButton > button:hover { background-color: #4f46e5; }
-    .metric-card { background-color: #1e293b; border-radius: 8px; padding: 1rem; text-align: center; }
-    .success-box { background-color: #064e3b; border: 1px solid #10b981; border-radius: 8px; padding: 1rem; margin: 1rem 0; }
-    .info-box { background-color: #1e3a5f; border: 1px solid #6366f1; border-radius: 8px; padding: 1rem; margin: 1rem 0; }
-    h1, h2, h3 { color: #f8fafc; }
-</style>
-""",
-    unsafe_allow_html=True,
-)
+apply_theme()
 
 
 # -- Session state --
