@@ -104,14 +104,26 @@ with st.sidebar:
                 st.session_state.filename = ", ".join(f.name for f in uploaded_files)
                 st.session_state.messages = []
 
-            st.success(f"Indexed {len(uploaded_files)} file(s)")
+            st.markdown(
+                f'<div class="success-box">Indexed {len(uploaded_files)} file(s)</div>',
+                unsafe_allow_html=True,
+            )
 
     if st.session_state.doc_loaded:
         st.divider()
         kg = st.session_state.graph_pipeline.knowledge_graph
-        st.metric("Entities", kg.entity_count)
-        st.metric("Relationships", kg.relationship_count)
-        st.metric("Chunks", len(kg.chunks))
+        for label, value in [
+            ("Entities", kg.entity_count),
+            ("Relationships", kg.relationship_count),
+            ("Chunks", len(kg.chunks)),
+        ]:
+            st.markdown(
+                f'<div class="metric-card" style="margin-bottom:0.5rem;">'
+                f'<div style="font-size:0.78rem;color:#8B949E;text-transform:uppercase;letter-spacing:.04em;font-weight:500;">{label}</div>'
+                f'<div style="font-size:1.4rem;font-weight:700;color:#f8fafc;margin-top:0.15rem;">{value}</div>'
+                f'</div>',
+                unsafe_allow_html=True,
+            )
 
 
 # -- Main content --
@@ -185,9 +197,19 @@ with tab_chat:
                 st.markdown(result.answer)
 
                 col1, col2, col3 = st.columns(3)
-                col1.metric("Confidence", f"{result.confidence * 100:.1f}%")
-                col2.metric("Latency", f"{result.latency_ms}ms")
-                col3.metric("Sources", len(result.sources))
+                for col, label, value in [
+                    (col1, "Confidence", f"{result.confidence * 100:.1f}%"),
+                    (col2, "Latency", f"{result.latency_ms}ms"),
+                    (col3, "Sources", len(result.sources)),
+                ]:
+                    with col:
+                        st.markdown(
+                            f'<div class="metric-card">'
+                            f'<div style="font-size:0.78rem;color:#8B949E;text-transform:uppercase;letter-spacing:.04em;font-weight:500;">{label}</div>'
+                            f'<div style="font-size:1.4rem;font-weight:700;color:#f8fafc;margin-top:0.15rem;">{value}</div>'
+                            f'</div>',
+                            unsafe_allow_html=True,
+                        )
 
                 if result.entities_found:
                     st.markdown(f"**Entities found**: {', '.join(result.entities_found)}")
@@ -247,6 +269,7 @@ with tab_graph:
             query_node_ids = set(kg.find_entities_in_query(query_highlight))
 
         # Try interactive pyvis, fall back to matplotlib
+        st.markdown('<div class="graph-container">', unsafe_allow_html=True)
         try:
             from pyvis.network import Network
 
@@ -314,6 +337,8 @@ with tab_graph:
             st.pyplot(fig)
             plt.close(fig)
 
+        st.markdown('</div>', unsafe_allow_html=True)
+
         # Legend (for pyvis)
         legend_html = " ".join(
             f'<span style="color:{c}; margin-right:12px;">&#9679; {t}</span>'
@@ -351,8 +376,17 @@ with tab_compare:
             basic: BasicRAGPipeline = st.session_state.basic_pipeline
             basic_result = basic.query(compare_query)
             st.markdown(basic_result.answer[:500])
-            st.metric("Latency", f"{basic_result.latency_ms}ms")
-            st.metric("Sources", len(basic_result.sources))
+            for label, value in [
+                ("Latency", f"{basic_result.latency_ms}ms"),
+                ("Sources", len(basic_result.sources)),
+            ]:
+                st.markdown(
+                    f'<div class="metric-card" style="margin-bottom:0.5rem;">'
+                    f'<div style="font-size:0.78rem;color:#8B949E;text-transform:uppercase;letter-spacing:.04em;font-weight:500;">{label}</div>'
+                    f'<div style="font-size:1.4rem;font-weight:700;color:#f8fafc;margin-top:0.15rem;">{value}</div>'
+                    f'</div>',
+                    unsafe_allow_html=True,
+                )
 
             if basic_result.sources:
                 with st.expander("Sources"):
@@ -369,7 +403,13 @@ with tab_compare:
                     st.markdown(f"**RRF: {r['rrf_score']:.4f}**")
                     st.caption(r["document"][:200])
                     st.divider()
-                st.metric("Results", len(hybrid_results))
+                st.markdown(
+                    f'<div class="metric-card" style="margin-bottom:0.5rem;">'
+                    f'<div style="font-size:0.78rem;color:#8B949E;text-transform:uppercase;letter-spacing:.04em;font-weight:500;">Results</div>'
+                    f'<div style="font-size:1.4rem;font-weight:700;color:#f8fafc;margin-top:0.15rem;">{len(hybrid_results)}</div>'
+                    f'</div>',
+                    unsafe_allow_html=True,
+                )
             else:
                 st.info("No hybrid results found.")
 
@@ -380,9 +420,19 @@ with tab_compare:
             st.markdown(graph_result.answer[:500])
 
             c1, c2, c3 = st.columns(3)
-            c1.metric("Confidence", f"{graph_result.confidence * 100:.1f}%")
-            c2.metric("Latency", f"{graph_result.latency_ms}ms")
-            c3.metric("Sources", len(graph_result.sources))
+            for col, label, value in [
+                (c1, "Confidence", f"{graph_result.confidence * 100:.1f}%"),
+                (c2, "Latency", f"{graph_result.latency_ms}ms"),
+                (c3, "Sources", len(graph_result.sources)),
+            ]:
+                with col:
+                    st.markdown(
+                        f'<div class="metric-card">'
+                        f'<div style="font-size:0.78rem;color:#8B949E;text-transform:uppercase;letter-spacing:.04em;font-weight:500;">{label}</div>'
+                        f'<div style="font-size:1.4rem;font-weight:700;color:#f8fafc;margin-top:0.15rem;">{value}</div>'
+                        f'</div>',
+                        unsafe_allow_html=True,
+                    )
 
             if graph_result.entities_found:
                 st.markdown(f"**Entities**: {', '.join(graph_result.entities_found)}")
