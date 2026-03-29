@@ -4,7 +4,8 @@ import streamlit as st
 
 _FONTS_URL = (
     "https://fonts.googleapis.com/css2?"
-    "family=Plus+Jakarta+Sans:wght@400;500;600;700&"
+    "family=Lexend:wght@400;500;600;700&"
+    "family=Work+Sans:wght@400;500;600&"
     "family=JetBrains+Mono:wght@400;500&display=swap"
 )
 
@@ -15,7 +16,10 @@ _CSS = f"""
 <style>
     /* Fonts */
     html, body, [class*="css"] {{
-        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-family: 'Work Sans', sans-serif;
+    }}
+    h1, h2, h3, h4, h5, h6 {{
+        font-family: 'Lexend', sans-serif !important;
     }}
     code, pre, .stCode {{
         font-family: 'JetBrains Mono', monospace !important;
@@ -26,16 +30,21 @@ _CSS = f"""
     [data-testid="stToolbar"] {{ display: none; }}
 
     /* Base layout */
-    .stApp {{ background-color: #0f172a; color: #f8fafc; }}
-    .main .block-container {{ background-color: #0f172a; padding-top: 2rem; }}
+    .stApp {{
+        background-color: #040D08;
+        color: #E2E8F0;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Ccircle cx='30' cy='30' r='3' fill='rgba(5,150,105,0.15)'/%3E%3Ccircle cx='100' cy='60' r='4' fill='rgba(5,150,105,0.12)'/%3E%3Ccircle cx='170' cy='30' r='3' fill='rgba(5,150,105,0.15)'/%3E%3Ccircle cx='60' cy='130' r='3' fill='rgba(5,150,105,0.10)'/%3E%3Ccircle cx='150' cy='150' r='4' fill='rgba(5,150,105,0.12)'/%3E%3Ccircle cx='30' cy='170' r='3' fill='rgba(5,150,105,0.10)'/%3E%3Cline x1='30' y1='30' x2='100' y2='60' stroke='rgba(5,150,105,0.08)' stroke-width='1'/%3E%3Cline x1='100' y1='60' x2='170' y2='30' stroke='rgba(5,150,105,0.08)' stroke-width='1'/%3E%3Cline x1='100' y1='60' x2='60' y2='130' stroke='rgba(5,150,105,0.06)' stroke-width='1'/%3E%3Cline x1='60' y1='130' x2='150' y2='150' stroke='rgba(5,150,105,0.06)' stroke-width='1'/%3E%3Cline x1='30' y1='170' x2='60' y2='130' stroke='rgba(5,150,105,0.06)' stroke-width='1'/%3E%3C/svg%3E");
+        background-size: 200px 200px;
+    }}
+    .main .block-container {{ background-color: transparent; padding-top: 2rem; }}
 
     /* Buttons */
     .stButton > button {{
-        background-color: #6366f1; color: white; border: none;
+        background-color: #059669; color: white; border: none;
         border-radius: 6px; padding: 0.5rem 1.5rem; font-weight: 600;
         transition: background-color 0.15s ease;
     }}
-    .stButton > button:hover {{ background-color: #4f46e5; }}
+    .stButton > button:hover {{ background-color: #047857; }}
 
     /* Glass metric card */
     .metric-card {{
@@ -46,6 +55,7 @@ _CSS = f"""
         border-radius: 10px;
         padding: 1rem;
         text-align: center;
+        box-shadow: 0 0 16px rgba(5, 150, 105, 0.25);
     }}
 
     /* Status boxes */
@@ -54,11 +64,11 @@ _CSS = f"""
         border-radius: 8px; padding: 1rem; margin: 1rem 0;
     }}
     .info-box {{
-        background-color: #1e3a5f; border: 1px solid #6366f1;
+        background-color: #071A0F; border: 1px solid #059669;
         border-radius: 8px; padding: 1rem; margin: 1rem 0;
     }}
 
-    h1, h2, h3 {{ color: #f8fafc; }}
+    h1, h2, h3 {{ color: #E2E8F0; }}
 
     /* Graph container */
     .graph-container {{
@@ -88,7 +98,7 @@ _CSS = f"""
     }}
 
     /* Sidebar */
-    [data-testid="stSidebar"] {{ background-color: #0a0f1e; }}
+    [data-testid="stSidebar"] {{ background-color: #061208; }}
 
     @media (prefers-reduced-motion: reduce) {{
         * {{ animation: none !important; transition: none !important; }}
