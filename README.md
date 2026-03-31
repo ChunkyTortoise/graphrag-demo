@@ -109,12 +109,6 @@ graphrag-demo/
 └── requirements.txt
 ```
 
-## Screenshots
-
-| Knowledge Graph Visualization | Query Results |
-|------------------------------|---------------|
-| ![Knowledge Graph](docs/screenshots/knowledge_graph.png) | ![Query Results](docs/screenshots/query_results.png) |
-
 ## Certifications Applied
 
 Domain pillars from [19 completed AI/ML certifications](https://caymanroden.com) backing this project:
