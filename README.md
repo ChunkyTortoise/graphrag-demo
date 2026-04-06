@@ -1,5 +1,5 @@
 [![Tests](https://github.com/ChunkyTortoise/graphrag-demo/actions/workflows/ci.yml/badge.svg)](https://github.com/ChunkyTortoise/graphrag-demo/actions)
-[![Coverage](https://img.shields.io/badge/coverage-%E2%89%A570%25-brightgreen)](https://github.com/ChunkyTortoise/graphrag-demo/actions)
+[![Coverage](https://img.shields.io/badge/coverage-%E2%89%A580%25-brightgreen)](https://github.com/ChunkyTortoise/graphrag-demo/actions)
 [![Tests](https://img.shields.io/badge/tests-63%20passing-brightgreen)](https://github.com/ChunkyTortoise/graphrag-demo/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 ![Python](https://img.shields.io/badge/python-3.12%2B-blue)
@@ -12,9 +12,14 @@ A production-grade RAG pipeline enhanced with knowledge graph extraction for mul
 
 ## Try It Now
 
-The app is live — no API key required for BM25 keyword retrieval mode.
+Run locally — no API key required for BM25 keyword retrieval mode:
 
-**[Launch GraphRAG Demo on Streamlit Cloud →](https://graphr-azucpb9e7jkdxavkahvicr.streamlit.app)**
+```bash
+git clone https://github.com/ChunkyTortoise/graphrag-demo.git
+cd graphrag-demo
+pip install -e "."
+streamlit run app.py
+```
 
 > To enable Claude-powered entity extraction: add your `ANTHROPIC_API_KEY` in the app sidebar.
 > BM25 retrieval works without any API key using fast keyword-based graph construction.
