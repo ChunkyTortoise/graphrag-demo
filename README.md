@@ -10,6 +10,20 @@
 
 A production-grade RAG pipeline enhanced with knowledge graph extraction for multi-hop reasoning, entity-aware retrieval, and confidence scoring.
 
+## For Hiring Managers
+
+| If you're hiring for... | This repo demonstrates |
+|---|---|
+| **AI/LLM Engineer** | Advanced RAG beyond basic vector search: knowledge graph extraction, multi-hop retrieval, entity-aware reasoning, confidence scoring |
+| **NLP/ML Engineer** | Named entity recognition (spaCy + Claude), graph-based retrieval (NetworkX), BM25 + semantic fusion (RRF), fact checking |
+| **Python Engineer** | 63 tests at 80%+ coverage, live Streamlit demo, no-API-key mode for BM25, side-by-side comparison tooling |
+
+**Key metrics:** 63 tests, 80%+ coverage, live Streamlit demo, works without API keys, side-by-side Basic RAG vs GraphRAG comparison
+
+**Certifications applied:** DeepLearning.AI Deep Learning Specialization (120h), IBM RAG and Agentic AI (24h), IBM Generative AI Engineering (144h)
+
+---
+
 ## Try It Now
 
 Run locally — no API key required for BM25 keyword retrieval mode:
