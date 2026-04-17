@@ -5,6 +5,7 @@
 ![Python](https://img.shields.io/badge/python-3.12%2B-blue)
 ![Streamlit](https://img.shields.io/badge/Streamlit-1.41-red)
 ![Claude](https://img.shields.io/badge/Claude-Sonnet-blueviolet)
+[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://graphr-azucpb9e7jkdxavkahvicr.streamlit.app)
 
 # GraphRAG Demo: Entity-Aware Multi-Hop Retrieval
 
@@ -25,6 +26,8 @@ A production-grade RAG pipeline enhanced with knowledge graph extraction for mul
 ---
 
 ## Try It Now
+
+**Live demo:** [graphr-azucpb9e7jkdxavkahvicr.streamlit.app](https://graphr-azucpb9e7jkdxavkahvicr.streamlit.app) — no install needed (BM25 mode works without API key)
 
 Run locally — no API key required for BM25 keyword retrieval mode:
 
