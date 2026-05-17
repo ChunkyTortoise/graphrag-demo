@@ -27,9 +27,9 @@ A production-grade RAG pipeline enhanced with knowledge graph extraction for mul
 
 ## Try It Now
 
-**Live demo:** [graphr-azucpb9e7jkdxavkahvicr.streamlit.app](https://graphr-azucpb9e7jkdxavkahvicr.streamlit.app) — no install needed (BM25 mode works without API key)
+**Live demo:** [graphr-azucpb9e7jkdxavkahvicr.streamlit.app](https://graphr-azucpb9e7jkdxavkahvicr.streamlit.app) - no install needed (BM25 mode works without API key)
 
-Run locally — no API key required for BM25 keyword retrieval mode:
+Run locally - no API key required for BM25 keyword retrieval mode:
 
 ```bash
 git clone https://github.com/ChunkyTortoise/graphrag-demo.git
@@ -46,15 +46,15 @@ streamlit run app.py
 1. Upload any `.txt` or `.pdf` document (try a Wikipedia article or a news story)
 2. Ask a multi-hop question: *"How are [Entity A] and [Entity B] related?"*
 3. Toggle between BM25-only and Claude extraction in the sidebar
-4. Inspect the knowledge graph visualization — nodes are entities, edges are relationships
+4. Inspect the knowledge graph visualization - nodes are entities, edges are relationships
 
 ## What Makes It Different From Basic RAG
 
-- **Entity Graph** — Extracts named entities (people, orgs, locations, products, concepts) and builds a NetworkX knowledge graph with co-occurrence relationships
-- **Multi-Hop Retrieval** — Traverses the entity graph to find related chunks beyond keyword matching, enabling answers that connect information across document sections
-- **Confidence Scores** — Quantifies answer reliability based on entity coverage and retrieval quality
-- **Fact Checking** — Validates answer claims against source text with word-level overlap analysis
-- **Side-by-Side Comparison** — Compare Basic RAG (BM25-only) vs GraphRAG on the same query
+- **Entity Graph** - Extracts named entities (people, orgs, locations, products, concepts) and builds a NetworkX knowledge graph with co-occurrence relationships
+- **Multi-Hop Retrieval** - Traverses the entity graph to find related chunks beyond keyword matching, enabling answers that connect information across document sections
+- **Confidence Scores** - Quantifies answer reliability based on entity coverage and retrieval quality
+- **Fact Checking** - Validates answer claims against source text with word-level overlap analysis
+- **Side-by-Side Comparison** - Compare Basic RAG (BM25-only) vs GraphRAG on the same query
 
 ## Architecture
 
@@ -145,7 +145,7 @@ Domain pillars from [19 completed AI/ML certifications](https://caymanroden.com)
 
 ## Built By
 
-**Cayman Roden** — AI/ML Engineer
+**Cayman Roden** - AI Engineer
 [LinkedIn](https://www.linkedin.com/in/caymanroden/) | [GitHub](https://github.com/ChunkyTortoise) | [Fiverr](https://www.fiverr.com/caymanroden)
 
 ## License
