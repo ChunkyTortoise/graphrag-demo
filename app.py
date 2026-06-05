@@ -1,5 +1,5 @@
 """
-GraphRAG Demo — Entity-Aware Multi-Hop Retrieval
+GraphRAG Demo: Entity-Aware Multi-Hop Retrieval
 by Cayman Roden
 
 Upload documents, build a knowledge graph, and compare Basic RAG vs GraphRAG.
@@ -8,8 +8,6 @@ Upload documents, build a knowledge graph, and compare Basic RAG vs GraphRAG.
 from __future__ import annotations
 
 import io
-import os
-import tempfile
 
 import matplotlib
 matplotlib.use("Agg")
@@ -18,8 +16,6 @@ import networkx as nx
 import streamlit as st
 import streamlit.components.v1 as components
 
-from graph.extractor import EntityExtractor, EntityType
-from graph.knowledge_graph import KnowledgeGraph
 from rag.basic import BasicRAGPipeline
 from rag.graph_rag import GraphRAGPipeline
 from theme import apply_theme
@@ -27,7 +23,7 @@ from theme import apply_theme
 
 # -- Page config --
 st.set_page_config(
-    page_title="GraphRAG Demo — Cayman Roden",
+    page_title="GraphRAG Demo · Cayman Roden",
     page_icon="🔗",
     layout="wide",
     initial_sidebar_state="expanded",
@@ -119,15 +115,15 @@ with st.sidebar:
         ]:
             st.markdown(
                 f'<div class="metric-card" style="margin-bottom:0.5rem;">'
-                f'<div style="font-size:0.78rem;color:#8B949E;text-transform:uppercase;letter-spacing:.04em;font-weight:500;">{label}</div>'
-                f'<div style="font-size:1.4rem;font-weight:700;color:#f8fafc;margin-top:0.15rem;">{value}</div>'
+                f'<div style="font-size:0.78rem;color:#9AA39C;text-transform:uppercase;letter-spacing:.04em;font-weight:500;">{label}</div>'
+                f'<div style="font-size:1.4rem;font-weight:700;color:#ECEAE3;margin-top:0.15rem;">{value}</div>'
                 f'</div>',
                 unsafe_allow_html=True,
             )
 
 
 # -- Main content --
-st.title("GraphRAG Demo — Entity-Aware Multi-Hop Retrieval")
+st.title("GraphRAG Demo: Entity-Aware Multi-Hop Retrieval")
 
 if not st.session_state.doc_loaded:
     st.markdown(
@@ -205,8 +201,8 @@ with tab_chat:
                     with col:
                         st.markdown(
                             f'<div class="metric-card">'
-                            f'<div style="font-size:0.78rem;color:#8B949E;text-transform:uppercase;letter-spacing:.04em;font-weight:500;">{label}</div>'
-                            f'<div style="font-size:1.4rem;font-weight:700;color:#f8fafc;margin-top:0.15rem;">{value}</div>'
+                            f'<div style="font-size:0.78rem;color:#9AA39C;text-transform:uppercase;letter-spacing:.04em;font-weight:500;">{label}</div>'
+                            f'<div style="font-size:1.4rem;font-weight:700;color:#ECEAE3;margin-top:0.15rem;">{value}</div>'
                             f'</div>',
                             unsafe_allow_html=True,
                         )
@@ -252,12 +248,13 @@ with tab_graph:
     else:
         G = kg.graph
 
+        # Categorical data palette; muted, coherent, no rainbow (chart rule).
         type_colors = {
-            "PERSON": "#4fc3f7",
-            "ORG": "#81c784",
-            "PRODUCT": "#ffb74d",
-            "CONCEPT": "#ce93d8",
-            "LOCATION": "#ef9a9a",
+            "PERSON": "#6CA8C4",    # muted steel-blue
+            "ORG": "#7FA38C",       # sage
+            "PRODUCT": "#C2A878",   # sand
+            "CONCEPT": "#CC9C7A",   # clay-tan
+            "LOCATION": "#C58A7C",  # dusty rose
         }
 
         # Optional: highlight query entities
@@ -274,7 +271,7 @@ with tab_graph:
             from pyvis.network import Network
 
             net = Network(
-                height="520px", width="100%", bgcolor="#0e1117", font_color="white"
+                height="520px", width="100%", bgcolor="#0E1310", font_color="#ECEAE3"
             )
             net.from_nx(G)
 
@@ -284,15 +281,15 @@ with tab_graph:
                 node["size"] = max(10, degree * 5)
                 etype = G.nodes[node_id].get("entity_type", "CONCEPT") if G.has_node(node_id) else "CONCEPT"
                 if query_node_ids and node_id in query_node_ids:
-                    node["color"] = "#FF6B6B"
+                    node["color"] = "#2F9E6E"  # accent: graph node highlight
                 else:
-                    node["color"] = type_colors.get(etype, "#e0e0e0")
+                    node["color"] = type_colors.get(etype, "#C9C6BD")
                 name = G.nodes[node_id].get("name", node_id) if G.has_node(node_id) else node_id
                 node["title"] = f"{name}\nType: {etype}\nDegree: {degree}"
                 node["label"] = name[:20]
 
             for edge in net.edges:
-                edge["color"] = "#888888"
+                edge["color"] = "#5A5247"
                 edge["width"] = max(1, edge.get("weight", 1))
 
             net.set_options("""{
@@ -307,32 +304,32 @@ with tab_graph:
         except Exception:
             # Fallback: matplotlib static graph
             fig, ax = plt.subplots(figsize=(12, 8))
-            fig.patch.set_facecolor("#0f172a")
-            ax.set_facecolor("#0f172a")
+            fig.patch.set_facecolor("#0E1310")
+            ax.set_facecolor("#0E1310")
 
             pos = nx.spring_layout(G, k=2.0, iterations=50, seed=42)
 
             node_colors_list = []
             for n in G.nodes:
                 if query_node_ids and n in query_node_ids:
-                    node_colors_list.append("#FF6B6B")
+                    node_colors_list.append("#2F9E6E")  # accent: graph node highlight
                 else:
                     node_colors_list.append(
-                        type_colors.get(G.nodes[n].get("entity_type", "CONCEPT"), "#e0e0e0")
+                        type_colors.get(G.nodes[n].get("entity_type", "CONCEPT"), "#C9C6BD")
                     )
             node_sizes = [300 + 100 * G.nodes[n].get("mentions", 1) for n in G.nodes]
             labels = {n: G.nodes[n].get("name", n)[:20] for n in G.nodes}
 
-            nx.draw_networkx_edges(G, pos, ax=ax, edge_color="#555555", alpha=0.5, arrows=True)
+            nx.draw_networkx_edges(G, pos, ax=ax, edge_color="#5A5247", alpha=0.5, arrows=True)
             nx.draw_networkx_nodes(G, pos, ax=ax, node_color=node_colors_list, node_size=node_sizes, alpha=0.9)
-            nx.draw_networkx_labels(G, pos, labels, ax=ax, font_size=8, font_color="white")
+            nx.draw_networkx_labels(G, pos, labels, ax=ax, font_size=8, font_color="#ECEAE3")
 
-            ax.set_title("Knowledge Graph", color="white", fontsize=14)
+            ax.set_title("Knowledge Graph", color="#ECEAE3", fontsize=14)
             ax.axis("off")
 
             for etype, color in type_colors.items():
                 ax.scatter([], [], c=color, s=100, label=etype)
-            ax.legend(loc="upper left", fontsize=8, facecolor="#1e293b", edgecolor="#334155", labelcolor="white")
+            ax.legend(loc="upper left", fontsize=8, facecolor="#141A16", edgecolor="#232C26", labelcolor="#ECEAE3")
 
             st.pyplot(fig)
             plt.close(fig)
@@ -382,8 +379,8 @@ with tab_compare:
             ]:
                 st.markdown(
                     f'<div class="metric-card" style="margin-bottom:0.5rem;">'
-                    f'<div style="font-size:0.78rem;color:#8B949E;text-transform:uppercase;letter-spacing:.04em;font-weight:500;">{label}</div>'
-                    f'<div style="font-size:1.4rem;font-weight:700;color:#f8fafc;margin-top:0.15rem;">{value}</div>'
+                    f'<div style="font-size:0.78rem;color:#9AA39C;text-transform:uppercase;letter-spacing:.04em;font-weight:500;">{label}</div>'
+                    f'<div style="font-size:1.4rem;font-weight:700;color:#ECEAE3;margin-top:0.15rem;">{value}</div>'
                     f'</div>',
                     unsafe_allow_html=True,
                 )
@@ -405,8 +402,8 @@ with tab_compare:
                     st.divider()
                 st.markdown(
                     f'<div class="metric-card" style="margin-bottom:0.5rem;">'
-                    f'<div style="font-size:0.78rem;color:#8B949E;text-transform:uppercase;letter-spacing:.04em;font-weight:500;">Results</div>'
-                    f'<div style="font-size:1.4rem;font-weight:700;color:#f8fafc;margin-top:0.15rem;">{len(hybrid_results)}</div>'
+                    f'<div style="font-size:0.78rem;color:#9AA39C;text-transform:uppercase;letter-spacing:.04em;font-weight:500;">Results</div>'
+                    f'<div style="font-size:1.4rem;font-weight:700;color:#ECEAE3;margin-top:0.15rem;">{len(hybrid_results)}</div>'
                     f'</div>',
                     unsafe_allow_html=True,
                 )
@@ -428,8 +425,8 @@ with tab_compare:
                 with col:
                     st.markdown(
                         f'<div class="metric-card">'
-                        f'<div style="font-size:0.78rem;color:#8B949E;text-transform:uppercase;letter-spacing:.04em;font-weight:500;">{label}</div>'
-                        f'<div style="font-size:1.4rem;font-weight:700;color:#f8fafc;margin-top:0.15rem;">{value}</div>'
+                        f'<div style="font-size:0.78rem;color:#9AA39C;text-transform:uppercase;letter-spacing:.04em;font-weight:500;">{label}</div>'
+                        f'<div style="font-size:1.4rem;font-weight:700;color:#ECEAE3;margin-top:0.15rem;">{value}</div>'
                         f'</div>',
                         unsafe_allow_html=True,
                     )

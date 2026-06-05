@@ -2,13 +2,11 @@
 
 from __future__ import annotations
 
-import math
-import re
 from dataclasses import dataclass, field
 
 from rank_bm25 import BM25Okapi
 
-from graph.knowledge_graph import ChunkRecord, KnowledgeGraph
+from graph.knowledge_graph import KnowledgeGraph
 
 
 @dataclass

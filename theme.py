@@ -14,13 +14,33 @@ _CSS = f"""
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="{_FONTS_URL}" rel="stylesheet">
 <style>
+    /* Warm-editorial tokens (single source of truth).
+       One accent (green), spent twice: active state + graph node highlight.
+       Radius: one 8px token. No glass, no glow. */
+    :root {{
+        --bg: #0E1310;          /* warm near-black canvas */
+        --sidebar: #0B0F0C;
+        --card: #141A16;        /* flat card, no blur */
+        --border: #232C26;
+        --accent: #2F9E6E;      /* deepened green, off the tailwind default */
+        --accent-hover: #268A5F;
+        --text: #ECEAE3;        /* warm off-white */
+        --text-muted: #9AA39C;
+        --chip: #ECEAE3;        /* inverted primary button face */
+        --radius: 8px;
+    }}
+
     /* Fonts */
     html, body, [class*="css"] {{
         font-family: 'Work Sans', sans-serif;
     }}
     h1, h2, h3, h4, h5, h6 {{
         font-family: 'Lexend', sans-serif !important;
+        color: var(--text);
+        letter-spacing: -0.02em;
     }}
+    /* Confident display scale (D5) */
+    h1 {{ font-size: 3.5rem !important; line-height: 1.0 !important; font-weight: 700 !important; }}
     code, pre, .stCode {{
         font-family: 'JetBrains Mono', monospace !important;
     }}
@@ -29,56 +49,51 @@ _CSS = f"""
     #MainMenu, footer, header {{ visibility: hidden; }}
     [data-testid="stToolbar"] {{ display: none; }}
 
-    /* Base layout */
+    /* Base layout: warm near-black, subtle graph-node signature pattern in accent */
     .stApp {{
-        background-color: #040D08;
-        color: #E2E8F0;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Ccircle cx='30' cy='30' r='3' fill='rgba(5,150,105,0.15)'/%3E%3Ccircle cx='100' cy='60' r='4' fill='rgba(5,150,105,0.12)'/%3E%3Ccircle cx='170' cy='30' r='3' fill='rgba(5,150,105,0.15)'/%3E%3Ccircle cx='60' cy='130' r='3' fill='rgba(5,150,105,0.10)'/%3E%3Ccircle cx='150' cy='150' r='4' fill='rgba(5,150,105,0.12)'/%3E%3Ccircle cx='30' cy='170' r='3' fill='rgba(5,150,105,0.10)'/%3E%3Cline x1='30' y1='30' x2='100' y2='60' stroke='rgba(5,150,105,0.08)' stroke-width='1'/%3E%3Cline x1='100' y1='60' x2='170' y2='30' stroke='rgba(5,150,105,0.08)' stroke-width='1'/%3E%3Cline x1='100' y1='60' x2='60' y2='130' stroke='rgba(5,150,105,0.06)' stroke-width='1'/%3E%3Cline x1='60' y1='130' x2='150' y2='150' stroke='rgba(5,150,105,0.06)' stroke-width='1'/%3E%3Cline x1='30' y1='170' x2='60' y2='130' stroke='rgba(5,150,105,0.06)' stroke-width='1'/%3E%3C/svg%3E");
+        background-color: var(--bg);
+        color: var(--text);
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Ccircle cx='30' cy='30' r='3' fill='rgba(47,158,110,0.12)'/%3E%3Ccircle cx='100' cy='60' r='4' fill='rgba(47,158,110,0.10)'/%3E%3Ccircle cx='170' cy='30' r='3' fill='rgba(47,158,110,0.12)'/%3E%3Ccircle cx='60' cy='130' r='3' fill='rgba(47,158,110,0.08)'/%3E%3Ccircle cx='150' cy='150' r='4' fill='rgba(47,158,110,0.10)'/%3E%3Ccircle cx='30' cy='170' r='3' fill='rgba(47,158,110,0.08)'/%3E%3Cline x1='30' y1='30' x2='100' y2='60' stroke='rgba(47,158,110,0.06)' stroke-width='1'/%3E%3Cline x1='100' y1='60' x2='170' y2='30' stroke='rgba(47,158,110,0.06)' stroke-width='1'/%3E%3Cline x1='100' y1='60' x2='60' y2='130' stroke='rgba(47,158,110,0.05)' stroke-width='1'/%3E%3Cline x1='60' y1='130' x2='150' y2='150' stroke='rgba(47,158,110,0.05)' stroke-width='1'/%3E%3Cline x1='30' y1='170' x2='60' y2='130' stroke='rgba(47,158,110,0.05)' stroke-width='1'/%3E%3C/svg%3E");
         background-size: 200px 200px;
     }}
     .main .block-container {{ background-color: transparent; padding-top: 2rem; }}
 
-    /* Buttons */
+    /* Primary action: inverted light chip (accent is spent on the graph) */
     .stButton > button {{
-        background-color: #059669; color: white; border: none;
-        border-radius: 6px; padding: 0.5rem 1.5rem; font-weight: 600;
+        background-color: var(--chip); color: var(--bg); border: none;
+        border-radius: var(--radius); padding: 0.5rem 1.5rem; font-weight: 600;
         transition: background-color 0.15s ease;
     }}
-    .stButton > button:hover {{ background-color: #047857; }}
+    .stButton > button:hover {{ background-color: #FFFFFF; }}
 
-    /* Glass metric card */
+    /* Flat metric card: no glass, no glow */
     .metric-card {{
-        background: rgba(255, 255, 255, 0.05);
-        backdrop-filter: blur(12px) saturate(180%);
-        -webkit-backdrop-filter: blur(12px) saturate(180%);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 10px;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
         padding: 1rem;
         text-align: center;
-        box-shadow: 0 0 16px rgba(5, 150, 105, 0.25);
     }}
 
     /* Status boxes */
     .success-box {{
-        background-color: #064e3b; border: 1px solid #10b981;
-        border-radius: 8px; padding: 1rem; margin: 1rem 0;
+        background-color: var(--card); border: 1px solid var(--accent);
+        border-radius: var(--radius); padding: 1rem; margin: 1rem 0;
     }}
     .info-box {{
-        background-color: #071A0F; border: 1px solid #059669;
-        border-radius: 8px; padding: 1rem; margin: 1rem 0;
+        background-color: var(--card); border: 1px solid var(--border);
+        border-radius: var(--radius); padding: 1rem; margin: 1rem 0;
     }}
-
-    h1, h2, h3 {{ color: #E2E8F0; }}
 
     /* Graph container */
     .graph-container {{
-        background: rgba(255, 255, 255, 0.02);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 12px;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
         overflow: hidden;
     }}
 
-    /* Skeleton shimmer */
+    /* Skeleton shimmer (functional loading state) */
     @keyframes shimmer {{
         0% {{ background-position: -468px 0; }}
         100% {{ background-position: 468px 0; }}
@@ -92,13 +107,13 @@ _CSS = f"""
         );
         background-size: 800px 104px;
         animation: shimmer 1.4s ease-in-out infinite;
-        border-radius: 6px;
+        border-radius: var(--radius);
         height: 1rem;
         margin: 0.4rem 0;
     }}
 
     /* Sidebar */
-    [data-testid="stSidebar"] {{ background-color: #061208; }}
+    [data-testid="stSidebar"] {{ background-color: var(--sidebar); }}
 
     @media (prefers-reduced-motion: reduce) {{
         * {{ animation: none !important; transition: none !important; }}
@@ -108,5 +123,5 @@ _CSS = f"""
 
 
 def apply_theme() -> None:
-    """Inject fonts, hide chrome, and apply glassmorphism CSS."""
+    """Inject fonts, hide chrome, and apply the warm-editorial theme."""
     st.markdown(_CSS, unsafe_allow_html=True)
