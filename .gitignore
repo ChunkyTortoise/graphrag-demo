@@ -6,3 +6,6 @@ __pycache__/
 dist/
 .env
 .coverage
+uv.lock
+.claude/settings.json
+.repo-health-ok

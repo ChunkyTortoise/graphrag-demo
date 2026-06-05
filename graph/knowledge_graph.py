@@ -3,12 +3,11 @@
 from __future__ import annotations
 
 import json
-import re
 from dataclasses import dataclass, field
 
 import networkx as nx
 
-from graph.extractor import Entity, EntityExtractor, Relationship
+from graph.extractor import Entity, EntityExtractor
 
 
 @dataclass
@@ -159,12 +158,13 @@ class KnowledgeGraph:
 
     def get_graphviz_dot(self) -> str:
         """Generate DOT string for Graphviz rendering."""
+        # Categorical data palette; muted, coherent, no rainbow (matches app.py).
         type_colors = {
-            "PERSON": "#4fc3f7",
-            "ORG": "#81c784",
-            "PRODUCT": "#ffb74d",
-            "CONCEPT": "#ce93d8",
-            "LOCATION": "#ef9a9a",
+            "PERSON": "#6CA8C4",
+            "ORG": "#7FA38C",
+            "PRODUCT": "#C2A878",
+            "CONCEPT": "#CC9C7A",
+            "LOCATION": "#C58A7C",
         }
 
         lines = ['digraph KnowledgeGraph {', '  rankdir=LR;', '  node [shape=box, style=filled];']
@@ -173,7 +173,7 @@ class KnowledgeGraph:
             data = self._graph.nodes[node_id]
             name = data.get("name", node_id)
             etype = data.get("entity_type", "CONCEPT")
-            color = type_colors.get(etype, "#e0e0e0")
+            color = type_colors.get(etype, "#C9C6BD")
             safe_name = name.replace('"', '\\"')
             safe_id = node_id.replace('"', '\\"')
             lines.append(f'  "{safe_id}" [label="{safe_name}\\n({etype})", fillcolor="{color}"];')
