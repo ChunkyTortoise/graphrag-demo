@@ -1,15 +1,12 @@
-[![Tests](https://github.com/ChunkyTortoise/graphrag-demo/actions/workflows/ci.yml/badge.svg)](https://github.com/ChunkyTortoise/graphrag-demo/actions)
-[![Coverage](https://img.shields.io/badge/coverage-%E2%89%A580%25-brightgreen)](https://github.com/ChunkyTortoise/graphrag-demo/actions)
-[![Tests](https://img.shields.io/badge/tests-63%20passing-brightgreen)](https://github.com/ChunkyTortoise/graphrag-demo/actions)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![CI](https://github.com/ChunkyTortoise/graphrag-demo/actions/workflows/ci.yml/badge.svg)](https://github.com/ChunkyTortoise/graphrag-demo/actions)
 ![Python](https://img.shields.io/badge/python-3.12%2B-blue)
-![Streamlit](https://img.shields.io/badge/Streamlit-1.41-red)
-![Claude](https://img.shields.io/badge/Claude-Sonnet-blueviolet)
-[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://graphr-azucpb9e7jkdxavkahvicr.streamlit.app)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 # GraphRAG Demo: Entity-Aware Multi-Hop Retrieval
 
-A production-grade RAG pipeline enhanced with knowledge graph extraction for multi-hop reasoning, entity-aware retrieval, and confidence scoring.
+RAG with knowledge-graph extraction for multi-hop questions, entity-aware retrieval, and confidence scoring.
+
+![Knowledge Graph tab after indexing a sample doc (14 entities, BM25/no-API mode)](docs/screenshots/hero.png)
 
 ## For Hiring Managers
 
@@ -17,9 +14,9 @@ A production-grade RAG pipeline enhanced with knowledge graph extraction for mul
 |---|---|
 | **AI/LLM Engineer** | Advanced RAG beyond basic vector search: knowledge graph extraction, multi-hop retrieval, entity-aware reasoning, confidence scoring |
 | **NLP/ML Engineer** | Named entity recognition (spaCy + Claude), graph-based retrieval (NetworkX), BM25 + semantic fusion (RRF), fact checking |
-| **Python Engineer** | 63 tests at 80%+ coverage, live Streamlit demo, no-API-key mode for BM25, side-by-side comparison tooling |
+| **Python Engineer** | 63 tests at 80%+ coverage, Streamlit UI, no-API-key BM25 mode, side-by-side Basic RAG vs GraphRAG |
 
-**Key metrics:** 63 tests, 80%+ coverage, live Streamlit demo, works without API keys, side-by-side Basic RAG vs GraphRAG comparison
+**Key metrics:** 63 tests, 80%+ coverage, works without API keys (BM25), side-by-side Basic RAG vs GraphRAG comparison
 
 **Certifications applied:** DeepLearning.AI Deep Learning Specialization (120h), IBM RAG and Agentic AI (24h), IBM Generative AI Engineering (144h)
 
@@ -27,9 +24,7 @@ A production-grade RAG pipeline enhanced with knowledge graph extraction for mul
 
 ## Try It Now
 
-**Live demo:** [graphr-azucpb9e7jkdxavkahvicr.streamlit.app](https://graphr-azucpb9e7jkdxavkahvicr.streamlit.app) - no install needed (BM25 mode works without API key)
-
-Run locally - no API key required for BM25 keyword retrieval mode:
+Streamlit Cloud URL exists but is currently auth-gated (not a public try-it link). Run locally instead (BM25 mode needs no API key):
 
 ```bash
 git clone https://github.com/ChunkyTortoise/graphrag-demo.git
