@@ -1,13 +1,6 @@
 > Historical learning project, not representative of current production work. Start here: [llm-reviewer-path](https://github.com/ChunkyTortoise/llm-reviewer-path) and [DocExtract](https://github.com/ChunkyTortoise/docextract).
 
 [![CI](https://github.com/ChunkyTortoise/graphrag-demo/actions/workflows/ci.yml/badge.svg)](https://github.com/ChunkyTortoise/graphrag-demo/actions)
-||||||| parent of 78986fe (docs: historical banner pointing at reviewer-path)
-[![Tests](https://github.com/ChunkyTortoise/graphrag-demo/actions/workflows/ci.yml/badge.svg)](https://github.com/ChunkyTortoise/graphrag-demo/actions)
-[![Coverage](https://img.shields.io/badge/coverage-%E2%89%A580%25-brightgreen)](https://github.com/ChunkyTortoise/graphrag-demo/actions)
-[![Tests](https://img.shields.io/badge/tests-63%20passing-brightgreen)](https://github.com/ChunkyTortoise/graphrag-demo/actions)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-![Python](https://img.shields.io/badge/python-3.12%2B-blue)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 # GraphRAG Demo: Entity-Aware Multi-Hop Retrieval
 
