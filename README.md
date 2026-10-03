@@ -1,4 +1,4 @@
-> Historical learning project, not representative of current production work. Start here: [llm-reviewer-path](https://github.com/ChunkyTortoise/llm-reviewer-path) and [DocExtract](https://github.com/ChunkyTortoise/docextract).
+> An earlier project. For current work, start with [DocExtract](https://github.com/ChunkyTortoise/docextract) and [ai-redteam-notes](https://github.com/ChunkyTortoise/ai-redteam-notes).
 
 [![CI](https://github.com/ChunkyTortoise/graphrag-demo/actions/workflows/ci.yml/badge.svg)](https://github.com/ChunkyTortoise/graphrag-demo/actions)
 
@@ -8,17 +8,12 @@ RAG with knowledge-graph extraction for multi-hop questions, entity-aware retrie
 
 ![Knowledge Graph tab after indexing a sample doc (14 entities, BM25/no-API mode)](docs/screenshots/hero.png)
 
-## For Hiring Managers
+## What it shows
 
-| If you're hiring for... | This repo demonstrates |
-|---|---|
-| **AI/LLM Engineer** | Advanced RAG beyond basic vector search: knowledge graph extraction, multi-hop retrieval, entity-aware reasoning, confidence scoring |
-| **NLP/ML Engineer** | Named entity recognition (spaCy + Claude), graph-based retrieval (NetworkX), BM25 + semantic fusion (RRF), fact checking |
-| **Python Engineer** | 63 tests at 80%+ coverage, Streamlit UI, no-API-key BM25 mode, side-by-side Basic RAG vs GraphRAG |
-
-**Key metrics:** 63 tests, 80%+ coverage, works without API keys (BM25), side-by-side Basic RAG vs GraphRAG comparison
-
-**Certifications applied:** DeepLearning.AI Deep Learning Specialization (120h), IBM RAG and Agentic AI (24h), IBM Generative AI Engineering (144h)
+- **Retrieval beyond vector search:** knowledge-graph extraction (spaCy, regex or Claude), multi-hop retrieval over a NetworkX graph, and BM25 + graph fusion with reciprocal rank fusion.
+- **Side-by-side comparison:** basic RAG vs. GraphRAG on the same question, in the Streamlit UI.
+- **Runs without an API key:** BM25 mode needs no key.
+- **Tested in CI:** 63 tests, with an 80% coverage floor ([`ci.yml`](.github/workflows/ci.yml)).
 
 ---
 
@@ -126,22 +121,10 @@ graphrag-demo/
 └── requirements.txt
 ```
 
-## Certifications Applied
-
-Domain pillars from [19 completed AI/ML certifications](https://caymanroden.com) backing this project:
-
-| Domain | Certification | Applied In |
-|--------|--------------|-----------|
-| Knowledge Graphs & NLP | DeepLearning.AI NLP Specialization | Entity extraction pipeline, relationship mapping, graph traversal |
-| Retrieval Systems | IBM AI Engineering Professional Certificate | BM25 index, score fusion (RRF), multi-hop retrieval |
-| LLM Integration | Anthropic Building with Claude (Vanderbilt) | Claude entity extraction, fact-checking layer |
-| Data Engineering | IBM Data Engineering | Document chunking, graph persistence, corpus indexing |
-| Visualization | Meta Back-End Developer | Streamlit graph visualization, interactive UI |
-
 ## Built By
 
 **Cayman Roden** - AI Engineer
-[LinkedIn](https://www.linkedin.com/in/caymanroden/) | [GitHub](https://github.com/ChunkyTortoise) | [Fiverr](https://www.fiverr.com/caymanroden)
+[Portfolio](https://chunkytortoise.github.io) | [LinkedIn](https://www.linkedin.com/in/caymanroden/) | [GitHub](https://github.com/ChunkyTortoise)
 
 ## License
 
